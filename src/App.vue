@@ -34,7 +34,7 @@ body {
   margin: 0;
 }
 
-h2 {
+h2, h3 {
   font-family: 'Fredoka One', cursive;
 }
 </style>

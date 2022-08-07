@@ -1,30 +1,17 @@
 <template>
-  <button class="button" v-if="!isLink" :class="mode">
+  <button class="button" :class="mode">
     <slot></slot>
   </button>
-  <router-link class="button" v-else to="to" :class="mode">
-    <slot></slot>
-  </router-link>
 </template>
 
 <script>
 export default {
   props: {
-    isLink: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     mode: {
       type: String,
       required: false,
       default: null,
     },
-  },
-  to: {
-    type: String,
-    required: false,
-    default: '/',
   },
 };
 </script>
@@ -49,8 +36,6 @@ a {
   display: inline-block;
 }
 
-a:hover,
-a:active,
 button:hover,
 button:active {
   background-color: #200070;

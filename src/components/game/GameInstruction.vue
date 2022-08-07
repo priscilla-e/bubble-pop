@@ -19,7 +19,7 @@ export default {
         'You lose a round if you score less than ' +
           this.minScore +
           ' points.',
-        'Ente your name at the end of each game to save your progress to the Leaderboard!',
+        'If you get a high score, don\'t save your game to the Leaderboard!',
       ],
     };
   },
