@@ -6,6 +6,7 @@ const store = createStore({
       playerName: 'test',
       totalStore: 0,
       totalRounds: 0,
+      
       currentPot: [
         { pts: 10, poped: false },
         { pts: 0, poped: false },

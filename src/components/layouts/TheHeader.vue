@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
 
 header {
-  font-family: 'Righteous', serif;
+  font-family: 'Righteous', cursive;
   background-color: #200070;
   color: white;
   width: 100%;
