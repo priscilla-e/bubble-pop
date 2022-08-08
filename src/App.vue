@@ -15,6 +15,23 @@ export default {
     GameBoard,
     GameLeaderboard,
   },
+  provide() {
+    return {
+      loadScores: this.loadScores,
+    };
+  },
+  methods: {
+    loadScores() {
+      this.$store.dispatch('loadScores');
+    },
+    loadHighestScore() {
+      this.$store.dispatch('loadHighestScore');
+    },
+  },
+  created() {
+    this.loadScores();
+    this.loadHighestScore();
+  }
 };
 </script>
 
@@ -34,7 +51,8 @@ body {
   margin: 0;
 }
 
-h2, h3 {
+h2,
+h3 {
   font-family: 'Fredoka One', cursive;
 }
 </style>

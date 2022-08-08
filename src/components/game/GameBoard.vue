@@ -66,6 +66,7 @@ export default {
     GameInstructions,
     GameBubbles,
   },
+  inject: ['updateHighestScore'],
   data() {
     return {
       playerName: '',
@@ -129,8 +130,12 @@ export default {
       this.generatePot();
     },
     popBubble(index) {
-      this.currentPot[index].poped = true;
-      const points = this.currentPot[index].pts;
+      const bubble = this.currentPot[index];
+      if (bubble.poped) {
+        return;
+      }
+      bubble.poped = true;
+      const points = bubble.pts;
       this.sticksLeft--;
       this.currentRoundScore += points;
       this.$store.dispatch('addScore', points);
@@ -141,7 +146,12 @@ export default {
     },
     quitGame() {
       this.isHighestScore =
-        this.totalScore > this.$store.getters.overallHighestScore;
+        this.totalScore >= this.$store.getters.overallHighestScore;
+      if (this.isHighestScore) {
+        this.$store.dispatch('setHighestScore', this.totalScore);
+      }
+      console.log(this.isHighestScore);
+      console.log(this.$store.getters.overallHighestScore);
       this.isPlaying = false;
       this.currentRound = 1;
       this.startGame = !this.startGame;
@@ -164,10 +174,6 @@ export default {
     close() {
       this.resetTotalScore();
     },
-  },
-  created() {
-    const savedScores = this.$store.getters.savedScores;
-    this.$store.dispatch('setHighestScore', savedScores);
   },
 };
 </script>
