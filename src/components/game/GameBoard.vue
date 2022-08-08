@@ -112,8 +112,8 @@ export default {
     },
     popBubble(index) {
       this.currentPot[index].poped = true;
-      this.sticksLeft--;
       const points = this.currentPot[index].pts;
+      this.sticksLeft--;
       this.currentRoundScore += points;
       this.$store.dispatch('addScore', points);
     },
@@ -122,7 +122,7 @@ export default {
     },
     quitGame() {
       this.isPlaying = false;
-      this.currentRound = 0;
+      this.currentRound = 1;
       this.resetTotalScore();
       this.startGame = !this.startGame;
     },

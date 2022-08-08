@@ -16,10 +16,8 @@ export default {
     return {
       instructions: [
         'Pop the bubbles to score points',
-        'You lose a round if you score less than ' +
-          this.minScore +
-          ' points.',
-        'If you get a high score, don\'t save your game to the Leaderboard!',
+        'You lose a round if you score less than ' + this.minScore + ' points.',
+        "If you get a high score, don't forget to save your game to the Leaderboard!",
       ],
     };
   },
