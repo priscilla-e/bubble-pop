@@ -37,13 +37,16 @@ const store = createStore({
     setHighestScore(state, payload) {
       state.overallHighestScore = payload;
     },
+    saveScore(state, payload) {
+      state.savedScores.unshift(payload);
+    },
   },
   actions: {
     addScore(context, payload) {
       context.commit('addScore', payload);
     },
     setTotalScore(context, payload) {
-      context.commit('setTotalScore', payload)
+      context.commit('setTotalScore', payload);
     },
     setHighestScore(context, savedScores) {
       const scores = [];
@@ -52,6 +55,9 @@ const store = createStore({
       }
       const highestScore = Math.max(...scores);
       context.commit('setHighestScore', highestScore);
+    },
+    saveScore(context, payload) {
+      context.commit('saveScore', payload);
     },
   },
 });

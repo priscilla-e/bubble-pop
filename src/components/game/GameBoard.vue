@@ -34,6 +34,25 @@
         </h3>
         <base-button @click="quitGame">End Game</base-button>
       </div>
+      <div v-if="!isPlaying && isHighestScore" class="dialog">
+        <base-modal :open="true" @close="close">
+          <h2>New High Score!</h2>
+          <h3>Enter your name below to save your game to the Leaderboard!</h3>
+          <form @submit.prevent="saveScore">
+            <div :class="{ invalid: !isValidName }">
+              <input
+                type="text"
+                id="playerName"
+                placeholder="Name"
+                v-model.trim="playerName"
+                @blur="clearValidity"
+              />
+            </div>
+            <p v-if="!isValidName">Name is a required field.</p>
+            <base-button>Save</base-button>
+          </form>
+        </base-modal>
+      </div>
     </base-card>
   </section>
 </template>
@@ -49,6 +68,8 @@ export default {
   },
   data() {
     return {
+      playerName: '',
+      isValidName: true,
       startGame: false,
       startInstructions: false,
       isPlaying: false,
@@ -58,6 +79,7 @@ export default {
       minScorePerRound: 100,
       sticksLeft: 6,
       currentPot: null,
+      isHighestScore: false,
     };
   },
   provide() {
@@ -82,15 +104,11 @@ export default {
     totalScore() {
       return this.$store.getters.totalScore;
     },
-    isHighestScore() {
-      return (
-        this.$store.getters.totalScore > this.$store.getters.overallHighestScore
-      );
-    },
   },
   methods: {
     startTheGame() {
       this.startGame = true;
+      this.resetTotalScore();
       this.startInstructions = true;
     },
     generatePot() {
@@ -103,12 +121,12 @@ export default {
       this.currentPot = newPot;
     },
     play() {
-      this.isPlaying = true;
       this.startInstructions = false;
+      this.isPlaying = true;
       this.roundWon = false;
       this.sticksLeft = 6;
-      this.generatePot();
       this.currentRoundScore = 0;
+      this.generatePot();
     },
     popBubble(index) {
       this.currentPot[index].poped = true;
@@ -119,12 +137,32 @@ export default {
     },
     resetTotalScore() {
       this.$store.dispatch('setTotalScore', 0);
+      this.isHighestScore = false;
     },
     quitGame() {
+      this.isHighestScore =
+        this.totalScore > this.$store.getters.overallHighestScore;
       this.isPlaying = false;
       this.currentRound = 1;
-      this.resetTotalScore();
       this.startGame = !this.startGame;
+    },
+    clearValidity() {
+      this.isValidName = true;
+    },
+    saveScore() {
+      if (this.playerName === '') {
+        this.isValidName = false;
+        return;
+      }
+
+      this.$store.dispatch('saveScore', {
+        playerName: this.playerName,
+        totalScore: this.totalScore,
+      });
+      this.resetTotalScore();
+    },
+    close() {
+      this.resetTotalScore();
     },
   },
   created() {
@@ -161,5 +199,33 @@ export default {
 .actions {
   display: flex;
   justify-content: space-between;
+}
+
+.dialog {
+  text-align: center;
+}
+
+input {
+  margin: auto;
+  font: inherit;
+  display: block;
+  width: 70%;
+  padding: 0.8rem 0.4rem;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+input:focus {
+  background-color: #eee8fb;
+  outline: none;
+  border-color: #200070;
+}
+
+.invalid input {
+  border: 1px solid red;
+}
+
+.dialog p {
+  color: red;
 }
 </style>
