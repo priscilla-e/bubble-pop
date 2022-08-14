@@ -138,8 +138,8 @@ export default {
     },
     play() {
       this.startInstructions = false;
-      this.isPlaying = true;
       this.roundWon = false;
+      this.isPlaying = true;
       this.sticksLeft = 6;
       this.currentRoundScore = 0;
       this.generatePot();
@@ -169,25 +169,39 @@ export default {
     clearValidity() {
       this.isValidName = true;
     },
-    saveScore() {
+    async updateScores(obj) {
+      const scores = this.$store.getters.savedScores;
+      const index = scores.findIndex(
+        (score) => obj.totalScore > score.totalScore
+      );
+      if (index != -1) {
+        let temp = scores[index];
+        scores[index] = obj;
+        await this.$store.dispatch('saveScore', scores);
+        this.updateScores(temp);
+      }
+    },
+    async saveScore() {
       if (this.playerName === '') {
         this.isValidName = false;
         return;
       }
-
       this.loadScores();
+
       const scores = this.$store.getters.savedScores;
-      for (let key in scores) {
-        if (this.totalScore > scores[key].totalScore) {
-          const newScore = {
-            playerName: this.playerName,
-            totalScore: this.totalScore,
-          };
-          scores.splice(key, 1, newScore);
-          break;
-        }
-      }
-      this.$store.dispatch('saveScore', scores);
+      const index = scores.findIndex(
+        (score) => this.totalScore > score.totalScore
+      );
+
+      const newScore = {
+        playerName: this.playerName,
+        totalScore: this.totalScore,
+      };
+      let temp = scores[index];
+      scores[index] = newScore;
+      await this.$store.dispatch('saveScore', scores);
+
+      this.updateScores(temp);
       this.resetTotalScore();
     },
     close() {
