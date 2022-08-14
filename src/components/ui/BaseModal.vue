@@ -44,10 +44,10 @@ dialog {
 }
 
 .modal-leave-active {
-  animation: dialog--in 0.3s ease-out reverse;
+  animation: dialog-in 0.3s ease-out reverse;
 }
 
-@keyframes dialog--in {
+@keyframes dialog-in {
   from {
     opacity: 0;
     transform: translateY(-50px) scale(0.9);

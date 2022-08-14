@@ -1,10 +1,14 @@
 <template>
-  <h2>How To Play</h2>
-  <ul v-for="inst in instructions" :key="inst">
-    <li>{{ inst }}</li>
-  </ul>
-  <div class="actions">
-    <base-button @click="$emit('play')"> Play </base-button>
+  <div>
+    <h2>How To Play</h2>
+    <transition-group name="instru">
+      <ul v-if="visible">
+        <li v-for="inst in instructions" :key="inst">{{ inst }}</li>
+      </ul>
+    </transition-group>
+    <div class="actions">
+      <base-button @click="$emit('play')"> Play </base-button>
+    </div>
   </div>
 </template>
 
@@ -14,12 +18,16 @@ export default {
   emits: ['play'],
   data() {
     return {
+      visible: false,
       instructions: [
         'Pop the bubbles to score points',
         'You lose a round if you score less than ' + this.minScore + ' points.',
         "If you get a high score, don't forget to save your game to the Leaderboard!",
       ],
     };
+  },
+  mounted() {
+    this.visible = true;
   },
 };
 </script>
@@ -42,8 +50,22 @@ li {
   padding: 1rem;
 }
 
+.instru-enter-active {
+  animation: fade-in 1.2s ease-out;
+}
+
 .actions {
   display: flex;
   justify-content: center;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 </style>

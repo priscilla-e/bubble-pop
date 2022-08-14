@@ -31,7 +31,7 @@ export default {
   created() {
     this.loadScores();
     this.loadHighestScore();
-  }
+  },
 };
 </script>
 
@@ -55,4 +55,6 @@ h2,
 h3 {
   font-family: 'Fredoka One', cursive;
 }
+
+
 </style>

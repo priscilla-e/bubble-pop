@@ -82,7 +82,35 @@ export default {
   cursor: pointer;
   font-size: 1.2em;
 }
+
 .poped {
   background: #ccc;
+  animation: fade-and-bounce 0.8s ease-out;
+}
+
+@media screen and (max-width: 480px) {
+  .bubble,
+  .poped {
+    width: 60px;
+    height: 60px;
+    font-size: 1em;
+  }
+}
+
+@keyframes fade-and-bounce {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 </style>

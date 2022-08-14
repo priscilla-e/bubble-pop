@@ -1,16 +1,17 @@
 <template>
   <section>
     <base-card>
-      <div v-if="!startGame" id="start-game">
+      <div v-if="!startGame" class="game-card">
         <base-button @click="startTheGame">Start Game</base-button>
       </div>
-      <div v-if="startInstructions">
+      <base-spinner v-else-if="isLoading" class="game-card"></base-spinner>
+      <div v-else-if="startInstructions">
         <game-instructions
           :minScore="minScorePerRound"
           @play="play"
         ></game-instructions>
       </div>
-      <div v-if="isPlaying && hasSticks">
+      <div v-else-if="isPlaying && hasSticks">
         <div class="menu-bar">
           <h3>Round: {{ currentRound }}</h3>
           <h3>Sticks: {{ sticksLeft }}</h3>
@@ -18,7 +19,7 @@
         </div>
         <game-bubbles :current-pot="currentPot"></game-bubbles>
       </div>
-      <div v-if="isPlaying && roundWon" class="won-round">
+      <div v-else-if="isPlaying && roundWon" class="won-round">
         <h2>Well Done!</h2>
         <h3>You won this round by {{ currentRoundScore }}!</h3>
         <div class="actions">
@@ -26,7 +27,7 @@
           <base-button @click="play">Next Round</base-button>
         </div>
       </div>
-      <div v-if="isPlaying && !roundWon && !hasSticks" class="won-round">
+      <div v-else-if="isPlaying && !roundWon && !hasSticks" class="won-round">
         <h2>Game Over!</h2>
         <h3>
           Sorry! You didn't win this one.<br />
@@ -66,9 +67,9 @@ export default {
     GameInstructions,
     GameBubbles,
   },
-  inject: ['updateHighestScore'],
   data() {
     return {
+      isLoading: false,
       playerName: '',
       isValidName: true,
       startGame: false,
@@ -109,8 +110,12 @@ export default {
   methods: {
     startTheGame() {
       this.startGame = true;
-      this.resetTotalScore();
-      this.startInstructions = true;
+      this.isLoading = true;
+      setTimeout(() => {
+        this.isLoading = false;
+        this.resetTotalScore();
+        this.startInstructions = true;
+      }, 2000);
     },
     generatePot() {
       const newPot = [];
@@ -179,8 +184,8 @@ export default {
 </script>
 
 <style scoped>
-#start-game {
-  background-color: #dcf6fc;
+.game-card {
+  background-color: #eee7ff;
   padding: 9rem 0;
   text-align: center;
 }

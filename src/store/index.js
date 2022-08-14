@@ -3,7 +3,7 @@ import { createStore } from 'vuex';
 const store = createStore({
   state() {
     return {
-      playerName: 'test',
+      playerName: '',
       totalScore: 0,
       overallHighestScore: 0,
       savedScores: [],
@@ -82,11 +82,12 @@ const store = createStore({
       }
       context.commit('saveScore', payload);
     },
+
     async loadScores(context) {
       const response = await fetch(
-        `https://bubble-pop-3165d-default-rtdb.firebaseio.com/leaderboard.json`
+        `https://bubble-pop-3165d-default-rtdb.firebaseio.com/leaderboard.json?orderBy="$value"&limitToLast=3`
       );
-
+    
       const responseData = await response.json();
 
       if (!response.ok) {
