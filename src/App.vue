@@ -24,13 +24,9 @@ export default {
     loadScores() {
       this.$store.dispatch('loadScores');
     },
-    loadHighestScore() {
-      this.$store.dispatch('loadHighestScore');
-    },
   },
   created() {
     this.loadScores();
-    this.loadHighestScore();
   },
 };
 </script>
@@ -55,6 +51,4 @@ h2,
 h3 {
   font-family: 'Fredoka One', cursive;
 }
-
-
 </style>

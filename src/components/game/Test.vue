@@ -35,7 +35,7 @@
         </h3>
         <base-button @click="quitGame">End Game</base-button>
       </div>
-      <div v-if="!isPlaying && isHighScore" class="dialog">
+      <div v-if="!isPlaying && isHighestScore" class="dialog">
         <base-modal :open="true" @close="close">
           <h2>New High Score!</h2>
           <h3>Enter your name below to save your game to the Leaderboard!</h3>
@@ -67,7 +67,6 @@ export default {
     GameInstructions,
     GameBubbles,
   },
-  inject: ['loadScores'],
   data() {
     return {
       isLoading: false,
@@ -82,6 +81,7 @@ export default {
       minScorePerRound: 100,
       sticksLeft: 6,
       currentPot: null,
+      isHighestScore: false,
       isHighScore: false,
     };
   },
@@ -109,14 +109,16 @@ export default {
     },
   },
   methods: {
-    checkHighScore() {
+    checkHighScore(sc = 200) {
       const scores = this.$store.getters.savedScores;
       for (let key in scores) {
-        if (this.totalScore > scores[key].totalScore) {
-          this.isHighScore = true;
+        if (1000 > scores[key].totalScore) {
+          const test = { playerName: 'test', totalScore: sc };
+          scores.splice(key, 1, test);
           break;
         }
       }
+      this.$store.commit('setScores', scores);
     },
     startTheGame() {
       this.startGame = true;
@@ -125,6 +127,7 @@ export default {
         this.isLoading = false;
         this.resetTotalScore();
         this.startInstructions = true;
+        this.checkHighScore();
       }, 2000);
     },
     generatePot() {
@@ -157,11 +160,16 @@ export default {
     },
     resetTotalScore() {
       this.$store.dispatch('setTotalScore', 0);
-      this.isHighScore = false;
+      this.isHighestScore = false;
     },
     quitGame() {
-      this.loadScores();
-      this.checkHighScore();
+      this.isHighestScore =
+        this.totalScore >= this.$store.getters.overallHighestScore;
+      if (this.isHighestScore) {
+        this.$store.dispatch('setHighestScore', this.totalScore);
+      }
+      console.log(this.isHighestScore);
+      console.log(this.$store.getters.overallHighestScore);
       this.isPlaying = false;
       this.currentRound = 1;
       this.startGame = !this.startGame;
@@ -175,19 +183,10 @@ export default {
         return;
       }
 
-      this.loadScores();
-      const scores = this.$store.getters.savedScores;
-      for (let key in scores) {
-        if (this.totalScore > scores[key].totalScore) {
-          const newScore = {
-            playerName: this.playerName,
-            totalScore: this.totalScore,
-          };
-          scores.splice(key, 1, newScore);
-          break;
-        }
-      }
-      this.$store.dispatch('saveScore', scores);
+      this.$store.dispatch('saveScore', {
+        playerName: this.playerName,
+        totalScore: this.totalScore,
+      });
       this.resetTotalScore();
     },
     close() {

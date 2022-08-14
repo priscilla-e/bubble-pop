@@ -40,7 +40,7 @@ dialog {
 }
 
 .modal-enter-active {
-  animation: dialog--in 0.2s ease-out;
+  animation: dialog-in 0.2s ease-out;
 }
 
 .modal-leave-active {

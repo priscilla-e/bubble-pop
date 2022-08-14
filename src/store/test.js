@@ -5,18 +5,8 @@ const store = createStore({
     return {
       playerName: '',
       totalScore: 0,
-      savedScores: [
-        { playerName: 'Sandra', totalScore: 100 },
-        { playerName: 'Max', totalScore: 100 },
-        { playerName: 'Rebecca', totalScore: 100 },
-        { playerName: 'John', totalScore: 100 },
-        { playerName: 'Phil', totalScore: 100 },
-        { playerName: 'Betty', totalScore: 100 },
-        { playerName: 'Jamie', totalScore: 100 },
-        { playerName: 'George', totalScore: 100 },
-        { playerName: 'Philip', totalScore: 100 },
-        { playerName: 'Maxin', totalScore: 100 },
-      ],
+      overallHighestScore: 0,
+      savedScores: [],
     };
   },
   getters: {
@@ -29,6 +19,9 @@ const store = createStore({
     savedScores(state) {
       return state.savedScores;
     },
+    overallHighestScore(state) {
+      return state.overallHighestScore;
+    },
   },
   mutations: {
     addScore(state, payload) {
@@ -36,6 +29,12 @@ const store = createStore({
     },
     setTotalScore(state, payload) {
       state.totalScore = payload;
+    },
+    setHighestScore(state, payload) {
+      state.overallHighestScore = payload;
+    },
+    saveScore(state, payload) {
+      state.savedScores.unshift(payload);
     },
     setScores(state, payload) {
       state.savedScores = payload;
@@ -48,22 +47,10 @@ const store = createStore({
     setTotalScore(context, payload) {
       context.commit('setTotalScore', payload);
     },
-    async saveScore(context, payload) {
-      const response = await fetch(
-        `https://bubble-pop-3165d-default-rtdb.firebaseio.com/leaderboard.json`,
-        {
-          method: 'PUT',
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!response.ok) {
-        // ..error
-      }
-      context.commit('setScores', payload);
+    setHighestScore(context, payload) {
+      context.commit('setHighestScore', payload);
     },
-
-    async loadScores(context) {
+    async loadHighestScore(context) {
       const response = await fetch(
         `https://bubble-pop-3165d-default-rtdb.firebaseio.com/leaderboard.json`
       );
@@ -76,7 +63,40 @@ const store = createStore({
 
       const scores = [];
       for (const key in responseData) {
-        scores.push({
+        scores.unshift(responseData[key].totalScore);
+      }
+      const highestScore = Math.max(...scores);
+      context.commit('setHighestScore', highestScore);
+    },
+    async saveScore(context, payload) {
+      const response = await fetch(
+        `https://bubble-pop-3165d-default-rtdb.firebaseio.com/leaderboard.json`,
+        {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        // ..error
+      }
+      context.commit('saveScore', payload);
+    },
+
+    async loadScores(context) {
+      const response = await fetch(
+        `https://bubble-pop-3165d-default-rtdb.firebaseio.com/leaderboard.json?orderBy="$value"&limitToLast=3`
+      );
+    
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        // ... error
+      }
+
+      const scores = [];
+      for (const key in responseData) {
+        scores.unshift({
           playerName: responseData[key].playerName,
           totalScore: responseData[key].totalScore,
         });
