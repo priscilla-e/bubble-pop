@@ -38,6 +38,7 @@ export default {
   grid-row-gap: 2.5rem;
   align-items: center;
   justify-items: center;
+  animation: fade-in 0.5s ease-out;
 }
 .bubble1 {
   grid-area: 1 / 1 / 2 / 2;

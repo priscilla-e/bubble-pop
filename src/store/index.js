@@ -3,7 +3,6 @@ import { createStore } from 'vuex';
 const store = createStore({
   state() {
     return {
-      playerName: '',
       totalScore: 0,
       savedScores: [
         { playerName: 'Sandra', totalScore: 100 },
@@ -20,9 +19,6 @@ const store = createStore({
     };
   },
   getters: {
-    playerName(state) {
-      return state.playerName;
-    },
     totalScore(state) {
       return state.totalScore;
     },

@@ -1,6 +1,6 @@
 <template>
   <div v-if="open" class="backdrop" @click="$emit('close')"></div>
-  <transition name="modal">
+  <transition name="dialog">
     <dialog open v-if="open">
       <slot></slot>
     </dialog>
@@ -39,23 +39,29 @@ dialog {
   border: none;
 }
 
-.modal-enter-active {
-  animation: dialog-in 0.2s ease-out;
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
 }
 
-.modal-leave-active {
-  animation: dialog-in 0.3s ease-out reverse;
+.dialog-enter-to,
+.dialog-leave-from {
+  opacity: 1;
+  transform: scale(1);
 }
 
-@keyframes dialog-in {
-  from {
-    opacity: 0;
-    transform: translateY(-50px) scale(0.9);
-  }
+.dialog-enter-active {
+  transition: all 0.3s ease-out;
+}
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+.dialog-leave-active {
+  transition: all 0.3s ease-in;
+}
+@media (min-width: 768px) {
+  dialog {
+    left: calc(50% - 20rem);
+    width: 40rem;
   }
 }
 </style>

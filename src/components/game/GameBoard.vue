@@ -27,7 +27,7 @@
           <base-button @click="play">Next Round</base-button>
         </div>
       </div>
-      <div v-else-if="isPlaying && !roundWon && !hasSticks" class="won-round">
+      <div v-else-if="isPlaying && !roundWon && !hasSticks" class="game-over">
         <h2>Game Over!</h2>
         <h3>
           Sorry! You didn't win this one.<br />
@@ -35,8 +35,8 @@
         </h3>
         <base-button @click="quitGame">End Game</base-button>
       </div>
-      <div v-if="!isPlaying && isHighScore" class="dialog">
-        <base-modal :open="true" @close="close">
+      <div class="dialog">
+        <base-modal :open="!isPlaying && isHighScore" @close="close">
           <h2>New High Score!</h2>
           <h3>Enter your name below to save your game to the Leaderboard!</h3>
           <form @submit.prevent="saveScore">
@@ -70,10 +70,10 @@ export default {
   inject: ['loadScores'],
   data() {
     return {
-      isLoading: false,
       playerName: '',
       isValidName: true,
       startGame: false,
+      isLoading: false,
       startInstructions: false,
       isPlaying: false,
       roundWon: false,
@@ -211,13 +211,21 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
+  animation: fade-in 0.5s ease-out;
 }
 
-.won-round {
+.won-round,
+.game-over {
   text-align: center;
+  animation: bounce-in 0.5s;
 }
 
-.won-round h3 {
+.game-over {
+  animation: fade-in 0.5s ease-out;
+}
+
+.won-round h3,
+.game-over h3 {
   padding: 2rem 0;
 }
 
