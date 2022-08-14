@@ -57,8 +57,11 @@ const store = createStore({
         }
       );
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        // ..error
+        const error = new Error(responseData.message || 'Could not save data.');
+        throw error;
       }
       context.commit('setScores', payload);
     },
@@ -71,7 +74,8 @@ const store = createStore({
       const responseData = await response.json();
 
       if (!response.ok) {
-        // ... error
+        const error = new Error(responseData.message || 'Could not load data.');
+        throw error;
       }
 
       const scores = [];
